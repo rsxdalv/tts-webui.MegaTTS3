@@ -20,7 +20,7 @@
 
 ## Key features
 - 🚀**Lightweight and Efficient:** The backbone of the TTS Diffusion Transformer has only 0.45B parameters.
-- 🎧**Ultra High-Quality Voice Cloning:** You can try our model at [Huggingface Demo](https://huggingface.co/spaces/ByteDance/MegaTTS3)🎉. The .wav and .npy files can be found at [link1](https://drive.google.com/drive/folders/1QhcHWcy20JfqWjgqZX1YM3I6i9u4oNlr?usp=sharing). Submit a sample (.wav format and < 24s) on [link2](https://drive.google.com/drive/folders/1gCWL1y_2xu9nIFhUX_OW5MbcFuB7J5Cl?usp=sharing) to receive .npy voice latents you can use locally.
+- 🎧**Ultra High-Quality Voice Cloning:** You can try our model at [Huggingface Demo](https://huggingface.co/spaces/ByteDance/MegaTTS3)🎉. The .wav and .npy files can be found at [link1](https://drive.google.com/drive/folders/1QhcHWcy20JfqWjgqZX1YM3I6i9u4oNlr?usp=sharing). Submit a sample (.wav format, < 24s, and please do not contain space in filename) on [link2](https://drive.google.com/drive/folders/1gCWL1y_2xu9nIFhUX_OW5MbcFuB7J5Cl?usp=sharing) to receive .npy voice latents you can use locally.
 - 🌍**Bilingual Support:** Supports both Chinese and English, and code-switching.
 - ✍️**Controllable:** Supports accent intensity control ✅ and fine-grained pronunciation/duration adjustment (coming soon).
 
