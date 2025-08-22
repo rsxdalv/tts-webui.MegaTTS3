@@ -88,6 +88,6 @@ if __name__ == '__main__':
                                 description="Upload a speech clip as a reference for timbre, " +
                                 "upload the pre-extracted latent file, "+
                                 "input the target text, and receive the cloned voice.", concurrency_limit=1)
-    api_interface.launch(server_name='0.0.0.0', server_port=7929, debug=True)
+    api_interface.launch(debug=True)
     for p in processes:
         p.join()

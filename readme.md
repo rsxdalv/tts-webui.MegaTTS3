@@ -95,11 +95,11 @@ $env:CUDA_VISIBLE_DEVICES=0 # Powershell on Windows
 docker build . -t megatts3:latest
 
 # For GPU inference
-docker run -it -p 7929:7929 --gpus all -e CUDA_VISIBLE_DEVICES=0 megatts3:latest
+docker run -it -p 127.0.0.1:7929:7929 --gpus all -e CUDA_VISIBLE_DEVICES=0 megatts3:latest
 # For CPU inference
-docker run -it -p 7929:7929  megatts3:latest
+docker run -it -p 127.0.0.1:7929:7929  megatts3:latest
 
-# Visit http://0.0.0.0:7929/ for gradio.
+# Visit http://127.0.0.1:7860/ for gradio.
 ```
 
 
