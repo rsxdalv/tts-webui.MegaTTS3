@@ -10,7 +10,7 @@
     <a href="https://huggingface.co/spaces/ByteDance/MegaTTS3"><img src="https://img.shields.io/badge/Hugging%20Face-Space%20Demo-yellow" alt="Hugging Face"></a>
     <a href="#"><img src="https://img.shields.io/badge/Platform-linux-lightgrey" alt="version"></a>
     <a href="#"><img src="https://img.shields.io/badge/Python-3.10-brightgreen" alt="version"></a>
-    <a href="#"><img src="https://img.shields.io/badge/PyTorch-2.3.0-orange" alt="python"></a>
+    <a href="#"><img src="https://img.shields.io/badge/PyTorch-2.6.0-orange" alt="python"></a>
     <a href="#"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="mit"></a>
 </div>
 <div align="center">
