@@ -22,7 +22,27 @@ Thumbs.db
 *.sublime-workspace
 *.sublime-project
 
+# Checkpoints
+checkpoints/*
+
 # Misc
 temp/
 *.tmp
 *.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.env/
+venv/
+ENV/
+env/
+__pypackages__/

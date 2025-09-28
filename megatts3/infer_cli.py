@@ -25,14 +25,13 @@ from langdetect import detect as classify_language
 from pydub import AudioSegment
 import pyloudnorm as pyln
 
-from tts.modules.ar_dur.commons.nar_tts_modules import LengthRegulator
-from tts.frontend_function import g2p, align, make_dur_prompt, dur_pred, prepare_inputs_for_dit
-from tts.utils.audio_utils.io import save_wav, to_wav_bytes, convert_to_wav_bytes, combine_audio_segments
-from tts.utils.commons.ckpt_utils import load_ckpt
-from tts.utils.commons.hparams import set_hparams, hparams
-from tts.utils.text_utils.text_encoder import TokenTextEncoder
-from tts.utils.text_utils.split_text import chunk_text_chinese, chunk_text_english, chunk_text_chinesev2
-from tts.utils.commons.hparams import hparams, set_hparams
+from .modules.ar_dur.commons.nar_tts_modules import LengthRegulator
+from .frontend_function import g2p, align, make_dur_prompt, dur_pred, prepare_inputs_for_dit
+from .utils.audio_utils.io import save_wav, to_wav_bytes, convert_to_wav_bytes, combine_audio_segments
+from .utils.commons.ckpt_utils import load_ckpt
+from .utils.commons.hparams import set_hparams, hparams
+from .utils.text_utils.text_encoder import TokenTextEncoder
+from .utils.text_utils.split_text import chunk_text_chinese, chunk_text_english, chunk_text_chinesev2
 
 
 if "TOKENIZERS_PARALLELISM" not in os.environ:
@@ -100,13 +99,14 @@ class MegaTTS3DiTInfer():
 
         ''' Load Dict '''
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        ling_dict = json.load(open(f"{current_dir}/utils/text_utils/dict.json", encoding='utf-8-sig'))
+        ling_dict_path = os.path.join(current_dir, "utils", "text_utils", "dict.json")
+        ling_dict = json.load(open(ling_dict_path, encoding='utf-8-sig'))
         self.ling_dict = {k: TokenTextEncoder(None, vocab_list=ling_dict[k], replace_oov='<UNK>') for k in ['phone', 'tone']}
         self.token_encoder = token_encoder = self.ling_dict['phone']
         ph_dict_size = len(token_encoder)
 
         ''' Load Duration LM '''
-        from tts.modules.ar_dur.ar_dur_predictor import ARDurPredictor
+        from .modules.ar_dur.ar_dur_predictor import ARDurPredictor
         hp_dur_model = self.hp_dur_model = set_hparams(f'{self.dur_exp_name}/config.yaml', global_hparams=False)
         hp_dur_model['frames_multiple'] = hparams['frames_multiple']
         self.dur_model = ARDurPredictor(
@@ -120,7 +120,7 @@ class MegaTTS3DiTInfer():
         self.dur_model.to(device)
 
         ''' Load Diffusion Transformer '''
-        from tts.modules.llm_dit.dit import Diffusion
+        from .modules.llm_dit.dit import Diffusion
         self.dit = Diffusion()
         load_ckpt(self.dit, f'{self.dit_exp_name}', 'dit', strict=False)
         self.dit.eval()
@@ -129,7 +129,7 @@ class MegaTTS3DiTInfer():
         self.cfg_mask_token_tone = 32 - 1
 
         ''' Load Frontend LM '''
-        from tts.modules.aligner.whisper_small import Whisper
+        from .modules.aligner.whisper_small import Whisper
         self.aligner_lm = Whisper()
         load_ckpt(self.aligner_lm, f'{self.frontend_exp_name}', 'model')
         self.aligner_lm.eval()
@@ -147,7 +147,7 @@ class MegaTTS3DiTInfer():
 
         ''' Wav VAE '''
         self.hp_wavvae = hp_wavvae = set_hparams(f'{self.wavvae_exp_name}/config.yaml', global_hparams=False)
-        from tts.modules.wavvae.decoder.wavvae_v3 import WavVAE_V3
+        from .modules.wavvae.decoder.wavvae_v3 import WavVAE_V3
         self.wavvae = WavVAE_V3(hparams=hp_wavvae)
         if os.path.exists(f'{self.wavvae_exp_name}/model_only_last.ckpt'):
             load_ckpt(self.wavvae, f'{self.wavvae_exp_name}/model_only_last.ckpt', 'model_gen', strict=True)
@@ -253,11 +253,11 @@ class MegaTTS3DiTInfer():
             return to_wav_bytes(wav_pred, self.sr)
 
 
-if __name__ == '__main__':
+def cli():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_wav', type=str)
-    parser.add_argument('--input_text', type=str)
-    parser.add_argument('--output_dir', type=str)
+    parser.add_argument('--input_wav', type=str, required=True)
+    parser.add_argument('--input_text', type=str, required=True)
+    parser.add_argument('--output_dir', type=str, required=True)
     parser.add_argument('--time_step', type=int, default=32, help='Inference steps of Diffusion Transformer')
     parser.add_argument('--p_w', type=float, default=1.6, help='Intelligibility Weight')
     parser.add_argument('--t_w', type=float, default=2.5, help='Similarity Weight')
@@ -276,3 +276,7 @@ if __name__ == '__main__':
     print(f"| Saving results to {out_path}/[P]{input_text[:20]}.wav")
     os.makedirs(out_path, exist_ok=True)
     save_wav(wav_bytes, f'{out_path}/[P]{input_text[:20]}.wav')
+
+
+if __name__ == '__main__':
+    cli()

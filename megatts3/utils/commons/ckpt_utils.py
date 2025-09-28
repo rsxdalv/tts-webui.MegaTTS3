@@ -29,8 +29,14 @@ def dist_load(path):
     if not dist.is_initialized() or dist.get_world_size() == 1 or os.path.realpath(path).startswith('/dev/shm'):
         yield path
     else:
-        from tts.utils.commons.hparams import hparams
-        from tts.utils.commons.trainer import LOCAL_RANK
+        try:
+            from .hparams import hparams
+        except Exception:
+            hparams = {"exp_name": "exp"}
+        try:
+            from .trainer import LOCAL_RANK
+        except Exception:
+            LOCAL_RANK = 0
         tmpdir = '/dev/shm'
         assert len(os.path.basename(path)) > 0
         shm_ckpt_path = f'{tmpdir}/{hparams["exp_name"]}/{os.path.basename(path)}'

@@ -18,7 +18,7 @@ import os
 from functools import partial
 import gradio as gr
 import traceback
-from tts.infer_cli import MegaTTS3DiTInfer, convert_to_wav, cut_wav
+from .infer_cli import MegaTTS3DiTInfer, convert_to_wav, cut_wav
 
 
 def model_worker(input_queue, output_queue, device_id):
@@ -56,7 +56,7 @@ def main(inp_audio, inp_npy, inp_text, infer_timestep, p_w, t_w, processes, inpu
         return None
 
 
-if __name__ == '__main__':
+def serve():
     mp.set_start_method('spawn', force=True)
     mp_manager = mp.Manager()
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         devices = os.environ.get('CUDA_VISIBLE_DEVICES', '').split(",")
     else:
         devices = None
-    
+
     num_workers = 1
     input_queue = mp_manager.Queue()
     output_queue = mp_manager.Queue()
@@ -77,17 +77,29 @@ if __name__ == '__main__':
         p.start()
         processes.append(p)
 
-    api_interface = gr.Interface(fn=
-                                partial(main, processes=processes, input_queue=input_queue, 
-                                        output_queue=output_queue), 
-                                inputs=[gr.Audio(type="filepath", label="Upload .wav"), gr.File(type="filepath", label="Upload .npy"), "text", 
-                                        gr.Number(label="infer timestep", value=32),
-                                        gr.Number(label="Intelligibility Weight", value=1.4),
-                                        gr.Number(label="Similarity Weight", value=3.0)], outputs=[gr.Audio(label="Synthesized Audio")],
-                                title="MegaTTS3",  
-                                description="Upload a speech clip as a reference for timbre, " +
-                                "upload the pre-extracted latent file, "+
-                                "input the target text, and receive the cloned voice.", concurrency_limit=1)
+    api_interface = gr.Interface(
+        fn=partial(main, processes=processes, input_queue=input_queue, output_queue=output_queue),
+        inputs=[
+            gr.Audio(type="filepath", label="Upload .wav"),
+            gr.File(type="filepath", label="Upload .npy"),
+            "text",
+            gr.Number(label="infer timestep", value=32),
+            gr.Number(label="Intelligibility Weight", value=1.4),
+            gr.Number(label="Similarity Weight", value=3.0),
+        ],
+        outputs=[gr.Audio(label="Synthesized Audio")],
+        title="MegaTTS3",
+        description=(
+            "Upload a speech clip as a reference for timbre, "
+            + "upload the pre-extracted latent file, "
+            + "input the target text, and receive the cloned voice."
+        ),
+        concurrency_limit=1,
+    )
     api_interface.launch(debug=True)
     for p in processes:
         p.join()
+
+
+if __name__ == '__main__':
+    serve()

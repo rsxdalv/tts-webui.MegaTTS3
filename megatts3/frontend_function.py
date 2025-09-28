@@ -17,8 +17,8 @@ import torch.nn.functional as F
 import whisper
 import librosa
 from copy import deepcopy
-from tts.utils.text_utils.ph_tone_convert import split_ph_timestamp, split_ph
-from tts.utils.audio_utils.align import mel2token_to_dur
+from .utils.text_utils.ph_tone_convert import split_ph_timestamp, split_ph
+from .utils.audio_utils.align import mel2token_to_dur
 
 ''' Graphme to phoneme function '''
 def g2p(self, text_inp):

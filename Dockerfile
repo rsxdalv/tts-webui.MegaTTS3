@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
 
-CMD ["python", "-m", "tts.gradio_api"]
+CMD ["python", "-m", "megatts3.gradio_api"]

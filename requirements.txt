@@ -21,6 +21,7 @@ langdetect>=1.0.9
 six>=1.16
 PyYAML>=6.0
 tqdm>=4.66
+huggingface_hub>=0.24,<1
 
 # Notes:
 # - matplotlib is only used in plotting utils; install separately or via your own extra

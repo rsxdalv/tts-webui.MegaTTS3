@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tts-webui.megatts3"
-version = "0.1.0"
+version = "0.1.1"
 description = "MegaTTS 3 - Zero-shot speech synthesis components as a Python library"
 readme = "readme.md"
 requires-python = ">=3.10,<4"
@@ -34,7 +34,12 @@ dependencies = [
   "six>=1.16",
   "PyYAML>=6.0",
   "tqdm>=4.66",
+  "huggingface_hub>=0.24,<1",
 ]
+
+[project.scripts]
+megatts3-infer = "megatts3.cli:infer"
+megatts3-gradio = "megatts3.cli:gradio"
 
 [project.optional-dependencies]
 ui = ["gradio>=5,<6"]
@@ -45,4 +50,8 @@ plot = ["matplotlib>=3.7"]
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["tts*"]
+include = ["megatts3*"]
+
+[tool.setuptools.package-data]
+# Include dicts and assets required at runtime
+"megatts3.utils.text_utils" = ["dict.json"]
